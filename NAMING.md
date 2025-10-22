@@ -38,7 +38,7 @@ python-udsonip    → udsonip         → from udsonip import DoIPUDSClient
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/python-udsonip.git
+git clone https://github.com/sirius-cc-wu/python-udsonip.git
 cd python-udsonip
 
 # Install package

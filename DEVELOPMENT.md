@@ -1,9 +1,9 @@
-# udsonip Development Guide
+# python-udsonip Development Guide
 
 ## Project Structure
 
 ```
-udsonip/
+python-udsonip/
 ├── udsonip/              # Main package
 │   ├── __init__.py       # Package exports
 │   ├── connection.py     # Enhanced DoIP connection
@@ -230,5 +230,4 @@ The main design decisions:
 
 ## Contact
 
-- Issues: https://github.com/yourusername/udsonip/issues
-- Discussions: https://github.com/yourusername/udsonip/discussions
+- Issues: https://github.com/sirius-cc-wu/python-udsonip/issues
