@@ -6,7 +6,7 @@ with multi-ECU support, dynamic address switching, and enhanced features.
 """
 
 __version__ = "0.1.0"
-__author__ = "Your Name"
+__author__ = "Sirius Wu"
 __license__ = "MIT"
 
 from .connection import DoIPUDSConnection
