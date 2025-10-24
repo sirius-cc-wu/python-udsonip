@@ -24,7 +24,7 @@ class UdsOnIpClient:
         client_ip: Optional source IP address (auto-detected if None)
         client_logical_address: Optional client logical address (default: 0x0E00)
         activation_type: DoIP activation type (default: 0)
-        protocol_version: DoIP protocol version (default: 0x02)
+        protocol_version: DoIP protocol version (default: 0x03)
         auto_reconnect: Automatically reconnect on connection loss
         keep_alive: Send keep-alive messages
         **kwargs: Additional arguments passed to UDS Client
@@ -43,7 +43,7 @@ class UdsOnIpClient:
         client_ip: Optional[str] = None,
         client_logical_address: int = 0x0E00,
         activation_type: int = 0,
-        protocol_version: int = 0x02,
+        protocol_version: int = 0x03,
         auto_reconnect: bool = False,
         keep_alive: bool = False,
         **kwargs
