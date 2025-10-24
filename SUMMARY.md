@@ -7,7 +7,7 @@
   - `connection.py` - Enhanced DoIP connection with dynamic addressing ✅
   - `client.py` - Unified UDS-on-IP client ✅
   - `multi_ecu.py` - Multi-ECU manager with context switching ✅
-  - `discovery.py` - ECU discovery utilities (stub) ⚠️
+  - `discovery.py` - ECU discovery utilities ✅
   - `exceptions.py` - Custom exception hierarchy ✅
 
 ### Working Features
@@ -16,6 +16,7 @@
 3. ✅ **Multi-ECU Manager** - Context-based ECU switching
 4. ✅ **UDS Service Wrappers** - Common services simplified
 5. ✅ **Connection Management** - Proper resource handling
+6. ✅ **Auto-Discovery** - Automatic ECU enumeration and discovery
 
 ### Examples (Ready to Use)
 - `01_basic_single_ecu.py` - Single ECU communication
@@ -38,19 +39,18 @@
 ##  What Needs Implementation
 
 ### High Priority
-1. **Discovery Functions** - Implement actual vehicle announcement parsing
-2. **Integration Testing** - Requires ECU simulator or real hardware
-3. **Documentation** - API reference using Sphinx
+1. **Integration Testing** - Requires ECU simulator or real hardware
+2. **Documentation** - API reference using Sphinx
 
 ### Medium Priority
-4. **Session Management** - Per-ECU session tracking
-5. **Enhanced Error Handling** - Retry logic, better messages
-6. **Keep-Alive** - Automatic keep-alive per ECU
+3. **Session Management** - Per-ECU session tracking
+4. **Enhanced Error Handling** - Retry logic, better messages
+5. **Keep-Alive** - Automatic keep-alive per ECU
 
 ### Low Priority
-7. **Utility Functions** - VIN decoder, DTC parser
-8. **Async Support** - asyncio integration
-9. **Config Files** - YAML/JSON configuration
+6. **Utility Functions** - VIN decoder, DTC parser
+7. **Async Support** - asyncio integration
+8. **Config Files** - YAML/JSON configuration
 
 ## 📊 Current Status
 
@@ -59,7 +59,7 @@
 | UdsOnIpConnection | ✅ Complete | ~80% |
 | UdsOnIpClient | ✅ Complete | ~70% |
 | DoIPMultiECUClient | ✅ Complete | ~60% |
-| Discovery | ⚠️ Stub | 20% |
+| Discovery | ✅ Complete | ~50% |
 | Exceptions | ✅ Complete | 100% |
 | Documentation | ✅ Good | - |
 | Examples | ✅ Complete | - |
@@ -96,22 +96,17 @@ pytest
 
 ## 📝 Next Immediate Steps
 
-1. **Implement Discovery** (discovery.py)
-   - Parse vehicle announcements
-   - Implement get_entity()
-   - Network scanning
-
-2. **Add More Tests**
+1. **Add More Tests**
    - Multi-ECU tests
    - Client tests
    - Integration tests with mocks
 
-3. **Create Sphinx Documentation**
+2. **Create Sphinx Documentation**
    - Set up docs/
    - Generate API reference
    - Write user guide
 
-4. **Test with Real Hardware**
+3. **Test with Real Hardware**
    - Validate against actual ECUs
    - Performance testing
    - Edge case handling
