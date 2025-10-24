@@ -59,7 +59,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 pip install -e ".[dev]"
 
 # Or install dependencies manually
-pip install doipclient python-udsoncan pytest pytest-cov black flake8
+pip install doipclient udsoncan pytest pytest-cov black flake8
 ```
 
 ## Project Structure
