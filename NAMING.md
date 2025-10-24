@@ -20,7 +20,7 @@ Following the common Python convention used by our dependencies:
 
 ### Package Name: `udsonip`
 - Short and easy to type: `pip install udsonip`
-- Clean import: `from udsonip import DoIPUDSClient`
+- Clean import: `from udsonip import UdsOnIpClient`
 - Follows modern Python convention (like `requests`, `flask`)
 - The `python-` prefix is redundant on PyPI (all packages are Python)
 
@@ -31,7 +31,7 @@ Repository          PyPI Package       Import
 ==========          ============       ======
 python-doipclient → doipclient      → from doipclient import DoIPClient
 python-udsoncan   → udsoncan        → from udsoncan import Client
-python-udsonip    → udsonip         → from udsonip import DoIPUDSClient
+python-udsonip    → udsonip         → from udsonip import UdsOnIpClient
 ```
 
 ## Installation & Usage
@@ -50,9 +50,9 @@ pip install -e .
 
 ```python
 # Use in code
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
-client = DoIPUDSClient('192.168.1.10', 0x00E0)
+client = UdsOnIpClient('192.168.1.10', 0x00E0)
 ```
 
 ## Historical Context

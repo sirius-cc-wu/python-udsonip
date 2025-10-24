@@ -7,7 +7,7 @@ python-udsonip/
 ├── udsonip/              # Main package
 │   ├── __init__.py       # Package exports
 │   ├── connection.py     # Enhanced DoIP connection
-│   ├── client.py         # Unified DoIP-UDS client
+│   ├── client.py         # Unified UDS-on-IP client
 │   ├── multi_ecu.py      # Multi-ECU manager
 │   ├── discovery.py      # ECU discovery utilities
 │   └── exceptions.py     # Custom exceptions
@@ -161,10 +161,10 @@ The library integrates:
 ### Current Implementation
 
 ```python
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
 # Single ECU (WORKS NOW)
-client = DoIPUDSClient('192.168.1.10', 0x00E0)
+client = UdsOnIpClient('192.168.1.10', 0x00E0)
 response = client.read_data_by_identifier(0xF190)
 client.close()
 

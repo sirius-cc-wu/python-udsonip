@@ -6,7 +6,7 @@ from typing import Dict, Optional
 from contextlib import contextmanager
 from doipclient import DoIPClient
 from udsoncan.client import Client as UDSClient
-from .connection import DoIPUDSConnection
+from .connection import UdsOnIpConnection
 from . import exceptions
 
 
@@ -52,7 +52,7 @@ class DoIPMultiECUClient:
         self._ecus: Dict[str, int] = {}
         
         # Cached connections and clients per ECU
-        self._connections: Dict[str, DoIPUDSConnection] = {}
+        self._connections: Dict[str, UdsOnIpConnection] = {}
         self._clients: Dict[str, UDSClient] = {}
         
         # Shared DoIP client (created on first use)
@@ -99,7 +99,9 @@ class DoIPMultiECUClient:
         return self._ecus.copy()
     
     def _ensure_connected(self):
-        """Ensure the DoIP connection is established."""
+        """
+        Ensure the DoIP connection is established.
+        """
         if not self._connected:
             # Create DoIP client (use gateway address 0x0001 or first ECU)
             gateway_address = 0x0001
@@ -142,7 +144,7 @@ class DoIPMultiECUClient:
         
         # Create connection and client
         logical_address = self._ecus[name]
-        connection = DoIPUDSConnection(self._doip, logical_address)
+        connection = UdsOnIpConnection(self._doip, logical_address)
         connection.open()
         
         client = UDSClient(connection)
@@ -192,7 +194,9 @@ class DoIPMultiECUClient:
         return self._get_client(name)
     
     def close(self):
-        """Close all connections and clean up resources."""
+        """
+        Close all connections and clean up resources.
+        """
         # Close all cached connections
         for connection in self._connections.values():
             try:
@@ -213,14 +217,20 @@ class DoIPMultiECUClient:
         self._clients.clear()
     
     def __enter__(self):
-        """Context manager entry."""
+        """
+        Context manager entry.
+        """
         self._ensure_connected()
         return self
     
     def __exit__(self, exc_type, exc_val, exc_tb):
-        """Context manager exit."""
+        """
+        Context manager exit.
+        """
         self.close()
     
     def __del__(self):
-        """Cleanup on deletion."""
+        """
+        Cleanup on deletion.
+        """
         self.close()

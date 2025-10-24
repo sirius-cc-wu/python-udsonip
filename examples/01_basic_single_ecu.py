@@ -2,11 +2,11 @@
 Basic example: Single ECU communication using udsonip.
 """
 
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
 def main():
     # Create client connected to a single ECU
-    client = DoIPUDSClient(
+    client = UdsOnIpClient(
         ecu_ip='192.168.1.10',
         ecu_address=0x00E0  # Engine ECU
     )

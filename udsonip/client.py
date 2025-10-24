@@ -1,18 +1,18 @@
 """
-Enhanced DoIP-UDS client with simplified API.
+Enhanced UDS-on-IP client with simplified API.
 """
 
 from typing import Optional, Union
 from doipclient import DoIPClient
 from udsoncan.client import Client as UDSClient
 from udsoncan import services
-from .connection import DoIPUDSConnection
+from .connection import UdsOnIpConnection
 from . import exceptions
 
 
-class DoIPUDSClient:
+class UdsOnIpClient:
     """
-    Unified DoIP-UDS client providing simplified access to UDS services.
+    Unified UDS-on-IP client providing simplified access to UDS services.
     
     This client wraps both DoIPClient and UDS Client, providing a single
     interface for automotive diagnostics over DoIP with support for dynamic
@@ -30,7 +30,7 @@ class DoIPUDSClient:
         **kwargs: Additional arguments passed to UDS Client
     
     Example:
-        >>> client = DoIPUDSClient('192.168.1.10', 0x00E0)
+        >>> client = UdsOnIpClient('192.168.1.10', 0x00E0)
         >>> response = client.read_data_by_identifier(0xF190)
         >>> print(f"VIN: {response.data.decode()}")
         >>> client.close()
@@ -65,7 +65,7 @@ class DoIPUDSClient:
         self._keep_alive = keep_alive
         
         # Create enhanced connection
-        self._connection = DoIPUDSConnection(self._doip, ecu_address)
+        self._connection = UdsOnIpConnection(self._doip, ecu_address)
         
         # Create UDS client
         self._uds = UDSClient(self._connection, **kwargs)

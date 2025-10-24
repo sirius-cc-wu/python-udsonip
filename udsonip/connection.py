@@ -7,7 +7,7 @@ from udsoncan.connections import BaseConnection
 from doipclient import DoIPClient
 
 
-class DoIPUDSConnection(BaseConnection):
+class UdsOnIpConnection(BaseConnection):
     """
     Enhanced DoIP connection that supports dynamic target address switching.
     
@@ -23,13 +23,13 @@ class DoIPUDSConnection(BaseConnection):
     Example:
         >>> from doipclient import DoIPClient
         >>> doip = DoIPClient('192.168.1.10', 0x00E0)
-        >>> conn = DoIPUDSConnection(doip)
+        >>> conn = UdsOnIpConnection(doip)
         >>> # Switch target address dynamically
         >>> conn.target_address = 0x00E1
     """
     
     def __init__(self, doip_client: DoIPClient, target_address: Optional[int] = None):
-        BaseConnection.__init__(self, name='DoIPUDS')
+        BaseConnection.__init__(self, name='UdsOnIp')
         self._doip = doip_client
         self._target_address = target_address or doip_client._ecu_logical_address
         self._opened = False
@@ -51,18 +51,22 @@ class DoIPUDSConnection(BaseConnection):
         self.logger.info(f"Target address switched to {value:#x}")
     
     def open(self):
-        """Open the DoIP connection."""
+        """
+        Open the DoIP connection.
+        """
         if not self._opened:
             # DoIPClient connection is typically already established
             # We just mark as opened
             self._opened = True
-            self.logger.info("DoIPUDSConnection opened")
+            self.logger.info("UdsOnIpConnection opened")
     
     def close(self):
-        """Close the DoIP connection."""
+        """
+        Close the DoIP connection.
+        """
         if self._opened:
             self._opened = False
-            self.logger.info("DoIPUDSConnection closed")
+            self.logger.info("UdsOnIpConnection closed")
     
     def specific_send(self, payload: bytes):
         """
@@ -100,11 +104,15 @@ class DoIPUDSConnection(BaseConnection):
             self.logger.error(f"Error receiving frame: {e}")
             raise
     
-    def empty_rxbuffer(self):
-        """Empty the reception buffer."""
+    def empty_rxqueue(self):
+        """
+        Empty the reception buffer.
+        """
         # DoIPClient handles buffering internally
         pass
     
     def is_open(self) -> bool:
-        """Check if connection is open."""
+        """
+        Check if connection is open.
+        """
         return self._opened

@@ -2,11 +2,11 @@
 Dynamic address switching example.
 """
 
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
 def main():
     # Create client
-    client = DoIPUDSClient(
+    client = UdsOnIpClient(
         ecu_ip='192.168.1.10',
         ecu_address=0x00E0  # Start with engine ECU
     )
@@ -42,3 +42,5 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+"""

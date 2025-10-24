@@ -34,17 +34,17 @@ class ECUInfo:
     
     def connect(self, client_ip: Optional[str] = None, **kwargs):
         """
-        Create a DoIPUDSClient connected to this ECU.
+        Create a UdsOnIpClient connected to this ECU.
         
         Args:
             client_ip: Optional client IP address
-            **kwargs: Additional arguments for DoIPUDSClient
+            **kwargs: Additional arguments for UdsOnIpClient
             
         Returns:
-            DoIPUDSClient instance
+            UdsOnIpClient instance
         """
-        from .client import DoIPUDSClient
-        return DoIPUDSClient(
+        from .client import UdsOnIpClient
+        return UdsOnIpClient(
             ecu_ip=self.ip,
             ecu_address=self.logical_address,
             client_ip=client_ip,

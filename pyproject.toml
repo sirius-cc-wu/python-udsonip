@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "udsonip"
 version = "0.1.0"
-description = "Enhanced DoIP-UDS integration library providing seamless multi-ECU support"
+description = "Enhanced UDS-on-IP integration library providing seamless multi-ECU support"
 readme = "README.md"
 authors = [
     {name = "Sirius Wu", email = "ccwu660601@gmail.com"}
@@ -28,7 +28,7 @@ keywords = ["doip", "uds", "automotive", "diagnostics", "iso13400", "iso14229"]
 requires-python = ">=3.7"
 dependencies = [
     "doipclient>=1.1.7",
-    "python-udsoncan>=1.21",
+    "udsoncan>=1.21",
 ]
 
 [project.optional-dependencies]

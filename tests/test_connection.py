@@ -4,18 +4,18 @@ Tests for udsonip connection module.
 
 import pytest
 from unittest.mock import Mock, MagicMock
-from udsonip.connection import DoIPUDSConnection
+from udsonip.connection import UdsOnIpConnection
 
 
-class TestDoIPUDSConnection:
-    """Tests for DoIPUDSConnection class."""
+class TestUdsOnIpConnection:
+    """Tests for UdsOnIpConnection class."""
     
     def test_init_with_explicit_address(self):
         """Test initialization with explicit target address."""
         mock_doip = Mock()
         mock_doip._ecu_logical_address = 0x00E0
         
-        conn = DoIPUDSConnection(mock_doip, target_address=0x00E1)
+        conn = UdsOnIpConnection(mock_doip, target_address=0x00E1)
         
         assert conn.target_address == 0x00E1
         assert conn._doip == mock_doip
@@ -25,7 +25,7 @@ class TestDoIPUDSConnection:
         mock_doip = Mock()
         mock_doip._ecu_logical_address = 0x00E0
         
-        conn = DoIPUDSConnection(mock_doip)
+        conn = UdsOnIpConnection(mock_doip)
         
         assert conn.target_address == 0x00E0
     
@@ -34,7 +34,7 @@ class TestDoIPUDSConnection:
         mock_doip = Mock()
         mock_doip._ecu_logical_address = 0x00E0
         
-        conn = DoIPUDSConnection(mock_doip)
+        conn = UdsOnIpConnection(mock_doip)
         conn.target_address = 0x00E2
         
         assert conn.target_address == 0x00E2
@@ -44,7 +44,7 @@ class TestDoIPUDSConnection:
         mock_doip = Mock()
         mock_doip._ecu_logical_address = 0x00E0
         
-        conn = DoIPUDSConnection(mock_doip)
+        conn = UdsOnIpConnection(mock_doip)
         
         assert not conn.is_open()
         
@@ -59,7 +59,7 @@ class TestDoIPUDSConnection:
         mock_doip = Mock()
         mock_doip._ecu_logical_address = 0x00E0
         
-        conn = DoIPUDSConnection(mock_doip, target_address=0x00E1)
+        conn = UdsOnIpConnection(mock_doip, target_address=0x00E1)
         payload = b'\x10\x01'  # Diagnostic session control
         
         conn.specific_send(payload)
@@ -75,7 +75,7 @@ class TestDoIPUDSConnection:
         mock_doip._ecu_logical_address = 0x00E0
         mock_doip.receive_diagnostic.return_value = b'\x50\x01\x00\x00'
         
-        conn = DoIPUDSConnection(mock_doip)
+        conn = UdsOnIpConnection(mock_doip)
         
         response = conn.specific_wait_frame(timeout=1.0)
         
@@ -88,7 +88,7 @@ class TestDoIPUDSConnection:
         mock_doip._ecu_logical_address = 0x00E0
         mock_doip.receive_diagnostic.return_value = None
         
-        conn = DoIPUDSConnection(mock_doip)
+        conn = UdsOnIpConnection(mock_doip)
         
         response = conn.specific_wait_frame(timeout=1.0)
         

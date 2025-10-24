@@ -5,7 +5,7 @@
 ### Core Package Structure
 - **udsonip/** - Main Python package
   - `connection.py` - Enhanced DoIP connection with dynamic addressing ✅
-  - `client.py` - Unified DoIP-UDS client ✅
+  - `client.py` - Unified UDS-on-IP client ✅
   - `multi_ecu.py` - Multi-ECU manager with context switching ✅
   - `discovery.py` - ECU discovery utilities (stub) ⚠️
   - `exceptions.py` - Custom exception hierarchy ✅
@@ -35,7 +35,7 @@
 - LICENSE - MIT license
 - pyproject.toml - Modern Python packaging
 
-## �� What Needs Implementation
+##  What Needs Implementation
 
 ### High Priority
 1. **Discovery Functions** - Implement actual vehicle announcement parsing
@@ -56,8 +56,8 @@
 
 | Component | Status | Coverage |
 |-----------|--------|----------|
-| DoIPUDSConnection | ✅ Complete | ~80% |
-| DoIPUDSClient | ✅ Complete | ~70% |
+| UdsOnIpConnection | ✅ Complete | ~80% |
+| UdsOnIpClient | ✅ Complete | ~70% |
 | DoIPMultiECUClient | ✅ Complete | ~60% |
 | Discovery | ⚠️ Stub | 20% |
 | Exceptions | ✅ Complete | 100% |
@@ -138,9 +138,9 @@ response = uds.read_data_by_identifier(0xF190)
 
 ### After (udsonip)
 ```python
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
-client = DoIPUDSClient('192.168.1.10', 0x00E0)
+client = UdsOnIpClient('192.168.1.10', 0x00E0)
 response = client.read_data_by_identifier(0xF190)
 ```
 
@@ -156,11 +156,11 @@ response = client.read_data_by_identifier(0xF190)
 ┌────────────▼────────────────────────┐
 │         udsonip Layer               │
 │  ┌──────────────┐  ┌──────────────┐│
-│  │ DoIPUDSClient│  │ MultiECU Mgr ││
+│  │ UdsOnIpClient│  │ MultiECU Mgr ││
 │  └──────┬───────┘  └──────┬───────┘│
 │         │                  │        │
 │  ┌──────▼──────────────────▼──────┐│
-│  │    DoIPUDSConnection          ││
+│  │    UdsOnIpConnection          ││
 │  └──────┬────────────────────────┘│
 └─────────┼──────────────────────────┘
           │

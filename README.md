@@ -1,6 +1,6 @@
 # python-udsonip
 
-**Enhanced DoIP-UDS Integration Library**
+**Enhanced UDS-on-IP Integration Library**
 
 > **Note:** Install via `pip install udsonip` (package name without the `python-` prefix)
 
@@ -25,10 +25,10 @@ pip install udsonip
 ### Single ECU Communication
 
 ```python
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
 # Simple single-ECU client
-client = DoIPUDSClient('192.168.1.10', 0x00E0)
+client = UdsOnIpClient('192.168.1.10', 0x00E0)
 response = client.read_data_by_identifier(0xF190)  # Read VIN
 print(f"VIN: {response.data.decode()}")
 client.close()
@@ -69,9 +69,9 @@ client = ecus[0].connect()
 ### Advanced Usage - Dynamic Target Switching
 
 ```python
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
-client = DoIPUDSClient(
+client = UdsOnIpClient(
     ecu_ip='192.168.1.10',
     ecu_address=0x00E0,
     auto_reconnect=True,
@@ -105,8 +105,8 @@ udsonip integrates:
 
 ## Key Components
 
-- **DoIPUDSConnection** - Enhanced connector with dynamic address support
-- **DoIPUDSClient** - Unified client wrapping both libraries
+- **UdsOnIpConnection** - Enhanced connector with dynamic address support
+- **UdsOnIpClient** - Unified client wrapping both libraries
 - **DoIPMultiECUClient** - Multi-ECU manager with context switching
 - **discover_ecus()** - ECU discovery utilities
 
@@ -143,9 +143,9 @@ response = uds_client.read_data_by_identifier(0xF190)
 ### After (using udsonip):
 
 ```python
-from udsonip import DoIPUDSClient
+from udsonip import UdsOnIpClient
 
-client = DoIPUDSClient('192.168.1.10', 0x00E0)
+client = UdsOnIpClient('192.168.1.10', 0x00E0)
 response = client.read_data_by_identifier(0xF190)
 ```
 
