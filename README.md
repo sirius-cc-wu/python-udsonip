@@ -6,6 +6,13 @@
 
 `udsonip` is a high-level Python library that seamlessly integrates [python-doipclient](https://github.com/jacobschaer/python-doipclient) and [python-udsoncan](https://github.com/pylessard/python-udsoncan) to provide enhanced multi-ECU support, improved ergonomics, and advanced features for automotive diagnostics over DoIP (Diagnostics over Internet Protocol).
 
+---
+
+**📖 Documentation:**
+- **For Users:** This README (installation, usage, examples)
+- **For Contributors:** See [CONTRIBUTING.md](CONTRIBUTING.md) (setup, testing, contribution guidelines)
+- **Project Status:** See [ARCHITECTURE.md](ARCHITECTURE.md) (features, roadmap, architecture)
+
 ## Features
 
 - 🎯 **Dynamic Target Address Support** - Runtime switching between ECU addresses
@@ -89,18 +96,25 @@ response = client.read_data_by_identifier(0xF190)
 ## Architecture
 
 ```
-udsonip integrates:
-  ┌─────────────────┐
-  │  python-udsoncan│  (UDS protocol)
-  └────────┬────────┘
-           │
-  ┌────────▼────────┐
-  │    udsonip      │  (Enhanced integration layer)
-  └────────┬────────┘
-           │
-  ┌────────▼────────┐
-  │python-doipclient│  (DoIP transport)
-  └─────────────────┘
+┌─────────────────────────────────────┐
+│         Your Application            │
+└────────────┬────────────────────────┘
+             │
+┌────────────▼────────────────────────┐
+│         udsonip Layer               │
+│  ┌──────────────┐  ┌──────────────┐│
+│  │ UdsOnIpClient│  │ MultiECU Mgr ││
+│  └──────┬───────┘  └──────┬───────┘│
+│         │                  │        │
+│  ┌──────▼──────────────────▼──────┐│
+│  │    UdsOnIpConnection          ││
+│  └──────┬────────────────────────┘│
+└─────────┼──────────────────────────┘
+          │
+┌─────────▼──────────┐  ┌─────────────┐
+│  python-udsoncan   │  │doipclient   │
+│  (UDS Protocol)    │  │(DoIP Trans) │
+└────────────────────┘  └─────────────┘
 ```
 
 ## Key Components
@@ -110,7 +124,7 @@ udsonip integrates:
 - **DoIPMultiECUClient** - Multi-ECU manager with context switching
 - **discover_ecus()** - ECU discovery utilities
 
-## Comparison with Plain Usage
+## Why udsonip?
 
 ### Before (using libraries separately):
 
@@ -119,7 +133,7 @@ from doipclient import DoIPClient
 from udsoncan.client import Client
 from udsoncan.connections import BaseConnection
 
-# Manual setup required
+# Manual setup required - 20+ lines of boilerplate
 doip_client = DoIPClient('192.168.1.10', 0x00E0)
 doip_client.connect()
 
@@ -136,7 +150,7 @@ class DoIPConnection(BaseConnection):
 connection = DoIPConnection(doip_client)
 uds_client = Client(connection)
 
-# Use UDS client
+# Finally use UDS client
 response = uds_client.read_data_by_identifier(0xF190)
 ```
 
@@ -145,13 +159,12 @@ response = uds_client.read_data_by_identifier(0xF190)
 ```python
 from udsonip import UdsOnIpClient
 
+# Just 2 lines!
 client = UdsOnIpClient('192.168.1.10', 0x00E0)
 response = client.read_data_by_identifier(0xF190)
 ```
 
-## Documentation
-
-Full documentation available at: https://udsonip.readthedocs.io
+**Result: 90% less code, 100% more readable!** 🎉
 
 ## Requirements
 
@@ -159,26 +172,83 @@ Full documentation available at: https://udsonip.readthedocs.io
 - python-doipclient >= 1.1.7
 - python-udsoncan >= 1.21
 
+## API Reference
+
+### UdsOnIpClient
+
+Main client for single ECU communication.
+
+```python
+client = UdsOnIpClient(
+    ecu_ip='192.168.1.10',
+    ecu_address=0x00E0,
+    client_ip=None,           # Auto-detect
+    auto_reconnect=False,
+    keep_alive=False,
+)
+```
+
+**Key Methods:**
+- `read_data_by_identifier(did)` - Read data by identifier
+- `write_data_by_identifier(did, data)` - Write data
+- `tester_present()` - Send tester present
+- `diagnostic_session_control(session)` - Change diagnostic session
+- `ecu_reset(reset_type)` - Reset ECU
+- `close()` - Close connection
+
+### DoIPMultiECUClient
+
+Manager for multiple ECUs on the same gateway.
+
+```python
+manager = DoIPMultiECUClient('192.168.1.10')
+manager.add_ecu('engine', 0x00E0)
+manager.add_ecu('transmission', 0x00E1)
+
+with manager.ecu('engine') as ecu:
+    # Use ecu like UdsOnIpClient
+    vin = ecu.read_data_by_identifier(0xF190)
+```
+
+### Discovery Functions
+
+```python
+from udsonip import discover_ecus, ECUInfo
+
+# Discover all ECUs
+ecus = discover_ecus(interface=None, timeout=5.0)
+
+# Connect to discovered ECU
+client = ecus[0].connect()
+```
+
+## Learning Resources
+
+- **DoIP Standard:** ISO 13400 (Diagnostics over Internet Protocol)
+- **UDS Standard:** ISO 14229 (Unified Diagnostic Services)
+- **python-doipclient:** https://github.com/jacobschaer/python-doipclient
+- **python-udsoncan:** https://github.com/pylessard/python-udsoncan
+
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for:
+- Development environment setup
+- Running tests
+- Code style guidelines
+- Contribution workflow
 
 ## License
 
 MIT License - see [LICENSE](LICENSE) file for details.
+
+## Support & Community
+
+- **Issues:** https://github.com/sirius-cc-wu/python-udsonip/issues
+- **Documentation:** https://udsonip.readthedocs.io
+- **Examples:** See `examples/` directory in the repository
 
 ## Acknowledgments
 
 Built on top of:
 - [python-doipclient](https://github.com/jacobschaer/python-doipclient) by Jacob Schaer
 - [python-udsoncan](https://github.com/pylessard/python-udsoncan) by Pier-Yves Lessard
-
-## Roadmap
-
-- [ ] Async/await support
-- [ ] DTC helpers
-- [ ] Flash/bootloader utilities
-- [ ] Configuration file support (YAML/JSON)
-- [ ] Enhanced logging
-- [ ] Protocol validation
-- [ ] Performance metrics
