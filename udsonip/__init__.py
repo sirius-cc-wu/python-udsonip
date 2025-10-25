@@ -5,7 +5,7 @@ Provides seamless integration between python-doipclient and python-udsoncan
 with multi-ECU support, dynamic address switching, and enhanced features.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __author__ = "Sirius Wu"
 __license__ = "MIT"
 
