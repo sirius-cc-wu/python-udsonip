@@ -11,7 +11,7 @@
 **📖 Documentation:**
 - **For Users:** This README (installation, usage, examples)
 - **For Contributors:** See [CONTRIBUTING.md](CONTRIBUTING.md) (setup, testing, contribution guidelines)
-- **Project Status:** See [ARCHITECTURE.md](ARCHITECTURE.md) (features, roadmap, architecture)
+- **Project Status:** See [DEVELOPMENT.md](DEVELOPMENT.md) (features, roadmap, architecture)
 
 ## Features
 

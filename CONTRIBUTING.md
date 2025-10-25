@@ -3,7 +3,7 @@
 This guide is for developers who want to contribute to the python-udsonip library.
 
 **For library users, see [README.md](README.md) instead.**  
-**For project architecture, see [ARCHITECTURE.md](ARCHITECTURE.md).**
+**For project architecture, see [DEVELOPMENT.md](DEVELOPMENT.md).**
 
 ---
 
@@ -311,7 +311,7 @@ The library integrates:
 
 ### Current Focus
 
-See [ARCHITECTURE.md](ARCHITECTURE.md) for current implementation status and roadmap.
+See [DEVELOPMENT.md](DEVELOPMENT.md) for current implementation status and roadmap.
 
 ---
 
