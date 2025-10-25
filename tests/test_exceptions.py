@@ -2,7 +2,6 @@
 Tests for udsonip exceptions.
 """
 
-import pytest
 from udsonip import exceptions
 
 

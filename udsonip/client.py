@@ -96,8 +96,10 @@ class UdsOnIpClient:
         """
         try:
             self._connection.target_address = value
-        except Exception as e:
-            raise exceptions.AddressSwitchError(f"Failed to switch address to {value:#x}: {e}")
+        except exceptions.AddressSwitchError as e:
+            raise exceptions.AddressSwitchError(
+                f"Failed to switch address to {value:#x}: {e}"
+            ) from e
 
     @property
     def uds(self) -> UDSClient:

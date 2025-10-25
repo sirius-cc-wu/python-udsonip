@@ -3,8 +3,9 @@ Tests for udsonip connection module.
 """
 
 import pytest
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 from udsonip.connection import UdsOnIpConnection
+from udsonip.exceptions import AddressSwitchError
 
 
 class TestUdsOnIpConnection:
@@ -38,6 +39,19 @@ class TestUdsOnIpConnection:
         conn.target_address = 0x00E2
 
         assert conn.target_address == 0x00E2
+
+    def test_target_address_setter_invalid(self):
+        """Test that an AddressSwitchError is raised for an invalid address."""
+        mock_doip = Mock()
+        mock_doip._ecu_logical_address = 0x00E0
+
+        conn = UdsOnIpConnection(mock_doip)
+
+        with pytest.raises(
+            AddressSwitchError,
+            match="Invalid logical address: 0x10000. Must be a 16-bit integer.",
+        ):
+            conn.target_address = 0x10000
 
     def test_open_close(self):
         """Test open and close operations."""

@@ -5,6 +5,7 @@ Enhanced DoIP connection for UDS communication with dynamic target address suppo
 from typing import Optional
 from udsoncan.connections import BaseConnection
 from doipclient import DoIPClient
+from .exceptions import AddressSwitchError
 
 
 class UdsOnIpConnection(BaseConnection):
@@ -47,6 +48,10 @@ class UdsOnIpConnection(BaseConnection):
         Args:
             value: New target logical address (e.g., 0x00E0, 0x00E1)
         """
+        if not 0x0000 <= value <= 0xFFFF:
+            raise AddressSwitchError(
+                f"Invalid logical address: {value:#x}. Must be a 16-bit integer."
+            )
         self._target_address = value
         self.logger.info(f"Target address switched to {value:#x}")
 
