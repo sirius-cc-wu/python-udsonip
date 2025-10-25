@@ -77,12 +77,12 @@ This document provides an overview of the project's current implementation statu
 
 | Component | Implementation | Test Coverage | Priority |
 |-----------|----------------|---------------|----------|
-| UdsOnIpConnection | ✅ Complete | ~80% | Expand edge cases |
-| UdsOnIpClient | ✅ Complete | ~70% | Add integration tests |
-| DoIPMultiECUClient | ✅ Complete | ~60% | Add concurrency tests |
-| Discovery | ✅ Complete | ~50% | Add mock-based tests |
+| UdsOnIpConnection | ✅ Complete | 90% | Expand edge cases |
+| UdsOnIpClient | ✅ Complete | 43% | Add integration tests |
+| DoIPMultiECUClient | ✅ Complete | 100% | Add concurrency tests |
+| Discovery | ✅ Complete | 98% | Add mock-based tests |
 | Exceptions | ✅ Complete | 100% | - |
-| **Overall** | **✅ Complete** | **~65%** | **Target: 85%** |
+| **Overall** | **✅ Complete** | **85%** | **Target: 85%** |
 
 ---
 

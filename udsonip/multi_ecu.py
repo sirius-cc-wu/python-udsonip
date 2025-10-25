@@ -203,14 +203,14 @@ class DoIPMultiECUClient:
         for connection in self._connections.values():
             try:
                 connection.close()
-            except:
+            except Exception:
                 pass
 
         # Disconnect DoIP client
         if self._doip and self._connected:
             try:
                 self._doip.disconnect()
-            except:
+            except Exception:
                 pass
             self._connected = False
 

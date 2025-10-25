@@ -57,9 +57,6 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install in editable mode with dev dependencies
 pip install -e ".[dev]"
-
-# Or install dependencies manually
-pip install doipclient udsoncan pytest pytest-cov black flake8
 ```
 
 ## Project Structure
