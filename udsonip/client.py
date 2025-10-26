@@ -72,7 +72,6 @@ class UdsOnIpClient:
 
         # Connect
         try:
-            self._doip.connect()
             self._connection.open()
         except Exception as e:
             raise exceptions.ConnectionError(f"Failed to connect to {ecu_ip}:{ecu_address:#x}: {e}")
@@ -110,7 +109,7 @@ class UdsOnIpClient:
         """Close the connection to the ECU."""
         try:
             self._connection.close()
-            self._doip.disconnect()
+            self._doip.close()
         except Exception as e:
             raise exceptions.ConnectionError(f"Error closing connection: {e}")
 
