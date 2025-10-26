@@ -1,9 +1,9 @@
-.. python-udsonip documentation master file, created by
+.. udsonip documentation master file, created by
    sphinx-quickstart on Sat Oct 25 15:55:36 2025.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-python-udsonip documentation
+udsonip documentation
 ============================
 
 Add your content using ``reStructuredText`` syntax. See the

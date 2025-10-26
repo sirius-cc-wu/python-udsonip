@@ -244,7 +244,7 @@ MIT License - see [LICENSE](LICENSE) file for details.
 ## Support & Community
 
 - **Issues:** https://github.com/sirius-cc-wu/python-udsonip/issues
-- **Documentation:** https://udsonip.readthedocs.io
+- **Documentation:** https://python-udsonip.readthedocs.io
 - **Examples:** See `examples/` directory in the repository
 
 ## Acknowledgments
