@@ -42,7 +42,11 @@ This document provides an overview of the project's current implementation statu
 ### Phase 1: Stability & Testing (Current)
 
 **High Priority:**
-1. **Integration Testing** - Requires ECU simulator or real hardware
+1. ✅ **Integration Testing** - Basic integration test with `motion-server` simulator is complete and passing.
+   - **Next Steps:**
+     - Create a dedicated error-handling test (`test_error_handling.py`) to verify NRC responses. (In Progress)
+     - Create a concurrency test (`test_concurrency.py`) using `multiprocessing` to simulate multiple clients.
+     - Create a test for the `DoIPMultiECUClient` (`test_multi_ecu_client.py`).
 2. ✅ ~~**API Documentation**~~ - Sphinx-based reference
 3. ✅ ~~**Improve Test Coverage**~~ - Target >85% coverage (**ACHIEVED: 98%**)
 
