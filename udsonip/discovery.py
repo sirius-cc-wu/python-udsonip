@@ -13,22 +13,22 @@ from .client import UdsOnIpClient
 
 @dataclass
 class ECUInfo:
-    """
-    Information about a discovered ECU.
-
-    Attributes:
-        ip: IP address of the ECU/gateway
-        logical_address: ECU logical address
-        eid: Entity Identification (VIN or similar)
-        gid: Group Identification
-        further_action: Further action required byte
-    """
+    """Information about a discovered ECU."""
 
     ip: str
+    """IP address of the ECU/gateway"""
+
     logical_address: int
+    """ECU logical address"""
+
     eid: Optional[bytes] = None
+    """Entity Identification (VIN or similar)"""
+
     gid: Optional[bytes] = None
+    """Group Identification"""
+
     further_action_required: Optional[int] = None
+    """Further action required byte"""
 
     def __str__(self):
         return f"ECU({self.ip} @ 0x{self.logical_address:04X})"

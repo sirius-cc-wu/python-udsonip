@@ -63,7 +63,6 @@ venv.bak/
 
 # Documentation
 docs/_build/
-docs/_static/
 docs/_templates/
 
 # MyPy
