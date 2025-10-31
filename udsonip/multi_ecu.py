@@ -101,23 +101,27 @@ class DoIPMultiECUClient:
     def _ensure_connected(self):
         """
         Ensure the DoIP connection is established.
+        
+        Per ISO 13400-2:2019, we connect to the first registered ECU for routing
+        activation. If no ECUs are registered, we fall back to 0x0001.
         """
         if not self._connected:
-            # Create DoIP client (use gateway address 0x0001 or first ECU)
-            gateway_address = 0x0001
-
-            self._doip = DoIPClient(
-                ecu_ip_address=self._gateway_ip,
-                ecu_logical_address=gateway_address,
-                tcp_port=13400,
-                udp_port=13400,
-                client_ip_address=self._client_ip,
-                client_logical_address=self._client_logical_address,
-                **self._kwargs,
-            )
+            # Use first registered ECU address or default gateway address per ISO 13400-2
+            if self._ecus:
+                gateway_address = next(iter(self._ecus.values()))
+            else:
+                gateway_address = 0x0001
 
             try:
-                self._doip.connect()
+                self._doip = DoIPClient(
+                    ecu_ip_address=self._gateway_ip,
+                    ecu_logical_address=gateway_address,
+                    tcp_port=13400,
+                    udp_port=13400,
+                    client_ip_address=self._client_ip,
+                    client_logical_address=self._client_logical_address,
+                    **self._kwargs,
+                )
                 self._connected = True
             except Exception as e:
                 raise exceptions.ConnectionError(
