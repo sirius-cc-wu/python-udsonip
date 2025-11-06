@@ -41,11 +41,13 @@ class DoIPMultiECUClient:
         gateway_ip: str,
         client_ip: Optional[str] = None,
         client_logical_address: int = 0x0E00,
+        protocol_version: int = 3,
         **kwargs,
     ):
         self._gateway_ip = gateway_ip
         self._client_ip = client_ip
         self._client_logical_address = client_logical_address
+        self._protocol_version = protocol_version
         self._kwargs = kwargs
 
         # ECU registry: name -> logical address
@@ -120,6 +122,7 @@ class DoIPMultiECUClient:
                     udp_port=13400,
                     client_ip_address=self._client_ip,
                     client_logical_address=self._client_logical_address,
+                    protocol_version=self._protocol_version,
                     **self._kwargs,
                 )
                 self._connected = True
