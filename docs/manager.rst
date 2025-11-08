@@ -1,4 +1,4 @@
-udsonip.multi_ecu
+udsonip.manager
 =================
 
 .. automodule:: udsonip.manager

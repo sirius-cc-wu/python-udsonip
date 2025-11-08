@@ -46,7 +46,7 @@ This document provides an overview of the project's current implementation statu
    - **Next Steps:**
      - Create a dedicated error-handling test (`test_error_handling.py`) to verify NRC responses. (In Progress)
      - Create a concurrency test (`test_concurrency.py`) using `multiprocessing` to simulate multiple clients.
-     - Create a test for the `DoIPManager` (`test_multi_ecu_client.py`).
+     - Create a test for the `DoIPManager` (`test_manager.py`).
 2. ✅ ~~**API Documentation**~~ - Sphinx-based reference
 3. ✅ ~~**Improve Test Coverage**~~ - Target >85% coverage (**ACHIEVED: 98%**)
 

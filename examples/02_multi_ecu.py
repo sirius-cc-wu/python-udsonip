@@ -3,7 +3,6 @@ Multi-ECU example: Communicating with multiple ECUs using udsonip.
 """
 
 from udsonip import DoIPManager
-from udsonip.exceptions import ECUNotFoundError
 
 # Create a manager for a DoIP gateway
 manager = DoIPManager(gateway_ip='192.168.1.10')
