@@ -44,10 +44,10 @@ client.close()
 ### Multi-ECU Communication
 
 ```python
-from udsonip import DoIPMultiECUClient
+from udsonip import DoIPManager
 
 # Multi-ECU manager
-manager = DoIPMultiECUClient('192.168.1.10')
+manager = DoIPManager('192.168.1.10')
 manager.add_ecu('engine', 0x00E0)
 manager.add_ecu('transmission', 0x00E1)
 
@@ -121,7 +121,7 @@ response = client.read_data_by_identifier(0xF190)
 
 - **UdsOnIpConnection** - Enhanced connector with dynamic address support
 - **UdsOnIpClient** - Unified client wrapping both libraries
-- **DoIPMultiECUClient** - Multi-ECU manager with context switching
+- **DoIPManager** - Multi-ECU manager with context switching
 - **discover_ecus()** - ECU discovery utilities
 
 ## Why udsonip?
@@ -196,12 +196,12 @@ client = UdsOnIpClient(
 - `ecu_reset(reset_type)` - Reset ECU
 - `close()` - Close connection
 
-### DoIPMultiECUClient
+### DoIPManager
 
 Manager for multiple ECUs on the same gateway.
 
 ```python
-manager = DoIPMultiECUClient('192.168.1.10')
+manager = DoIPManager('192.168.1.10')
 manager.add_ecu('engine', 0x00E0)
 manager.add_ecu('transmission', 0x00E1)
 

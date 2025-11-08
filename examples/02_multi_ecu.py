@@ -2,11 +2,11 @@
 Multi-ECU example: Communicating with multiple ECUs using udsonip.
 """
 
-from udsonip import DoIPMultiECUClient
+from udsonip import DoIPManager
+from udsonip.exceptions import ECUNotFoundError
 
-def main():
-    # Create multi-ECU manager
-    manager = DoIPMultiECUClient(gateway_ip='192.168.1.10')
+# Create a manager for a DoIP gateway
+manager = DoIPManager(gateway_ip='192.168.1.10')
     
     # Register ECUs
     manager.add_ecu('engine', 0x00E0)
