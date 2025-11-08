@@ -10,30 +10,23 @@ from .connection import UdsOnIpConnection
 from . import exceptions
 
 
-class DoIPMultiECUClient:
+class DoIPManager:
     """
-    Manager for communicating with multiple ECUs over a single DoIP gateway.
+    A client for managing connections to multiple ECUs via a single DoIP gateway.
 
-    This class maintains a single DoIP connection and allows switching between
-    different ECU logical addresses using context managers for clean and safe
-    multi-ECU communication.
-
-    Args:
-        gateway_ip: IP address of the DoIP gateway
-        client_ip: Optional source IP address
-        client_logical_address: Client logical address (default: 0x0E00)
-        **kwargs: Additional arguments for DoIP connection
+    This class provides a high-level interface for managing multiple ECUs that are
+    accessible through a single DoIP gateway. It handles the DoIP connection and
+    allows switching between ECUs using a context manager.
 
     Example:
-        >>> manager = DoIPMultiECUClient('192.168.1.10')
+        >>> from udsonip import DoIPManager
+        >>> manager = DoIPManager('192.168.1.10')
         >>> manager.add_ecu('engine', 0x00E0)
         >>> manager.add_ecu('transmission', 0x00E1)
         >>>
         >>> with manager.ecu('engine') as ecu:
         ...     vin = ecu.read_data_by_identifier(0xF190)
-        >>>
-        >>> with manager.ecu('transmission') as ecu:
-        ...     status = ecu.read_data_by_identifier(0x1234)
+        ...     print(f"Engine VIN: {vin.data.decode()}")
     """
 
     def __init__(
@@ -44,6 +37,18 @@ class DoIPMultiECUClient:
         protocol_version: int = 3,
         **kwargs,
     ):
+        """
+        Initializes the DoIPManager.
+
+        Args:
+            gateway_ip: The IP address of the DoIP gateway.
+            client_ip: Optional. The IP address of the client. If None, the system will
+                       attempt to determine it automatically.
+            client_logical_address: Optional. The logical address of the client.
+                                    Defaults to 0x0E00.
+            protocol_version: Optional. The DoIP protocol version to use. Defaults to 3.
+            **kwargs: Additional keyword arguments to pass to the underlying DoIPClient.
+        """
         self._gateway_ip = gateway_ip
         self._client_ip = client_ip
         self._client_logical_address = client_logical_address

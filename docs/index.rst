@@ -19,4 +19,4 @@ documentation for details.
    connection
    discovery
    exceptions
-   multi_ecu
+   manager

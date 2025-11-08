@@ -1,24 +1,24 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from udsonip.multi_ecu import DoIPMultiECUClient
+from udsonip.manager import DoIPManager
 from udsonip.exceptions import ECUNotFoundError, ConnectionError
 
 
 @pytest.fixture
 def manager():
-    """Fixture for a DoIPMultiECUClient instance."""
-    with patch("udsonip.multi_ecu.DoIPClient"):
-        manager = DoIPMultiECUClient("192.168.1.1")
+    """Fixture for a DoIPManager instance."""
+    with patch("udsonip.manager.DoIPClient"):
+        manager = DoIPManager("192.168.1.1")
         yield manager
         manager.close()
 
 
-class TestDoIPMultiECUClient:
-    """Tests for the DoIPMultiECUClient."""
+class TestDoIPManager:
+    """Tests for the DoIPManager."""
 
     def test_init(self):
         """Test that the client initializes correctly."""
-        manager = DoIPMultiECUClient(
+        manager = DoIPManager(
             "192.168.1.1", client_ip="192.168.1.100", client_logical_address=0x0E01
         )
         assert manager._gateway_ip == "192.168.1.1"
@@ -54,8 +54,8 @@ class TestDoIPMultiECUClient:
         assert "engine" not in manager._connections
         assert "engine" not in manager._clients
 
-    @patch("udsonip.multi_ecu.UDSClient")
-    @patch("udsonip.multi_ecu.UdsOnIpConnection")
+    @patch("udsonip.manager.UDSClient")
+    @patch("udsonip.manager.UdsOnIpConnection")
     def test_ecu_context_manager(self, MockUdsOnIpConnection, MockUDSClient, manager):
         """Test the ecu context manager."""
         manager.add_ecu("engine", 0x00E0)
@@ -71,16 +71,16 @@ class TestDoIPMultiECUClient:
             with manager.ecu("non_existent"):
                 pass
 
-    @patch("udsonip.multi_ecu.UDSClient")
-    @patch("udsonip.multi_ecu.UdsOnIpConnection")
+    @patch("udsonip.manager.UDSClient")
+    @patch("udsonip.manager.UdsOnIpConnection")
     def test_switch_to(self, MockUdsOnIpConnection, MockUDSClient, manager):
         """Test the switch_to method."""
         manager.add_ecu("engine", 0x00E0)
         client = manager.switch_to("engine")
         assert client == MockUDSClient.return_value
 
-    @patch("udsonip.multi_ecu.UDSClient")
-    @patch("udsonip.multi_ecu.UdsOnIpConnection")
+    @patch("udsonip.manager.UDSClient")
+    @patch("udsonip.manager.UdsOnIpConnection")
     def test_close(self, MockUdsOnIpConnection, MockUDSClient, manager):
         """Test that the close method cleans up resources."""
         manager.add_ecu("engine", 0x00E0)
@@ -99,29 +99,29 @@ class TestDoIPMultiECUClient:
         assert not manager._connections
         assert not manager._clients
 
-    @patch("udsonip.multi_ecu.DoIPMultiECUClient._ensure_connected")
+    @patch("udsonip.manager.DoIPManager._ensure_connected")
     def test_ensure_connected_failure(self, mock_ensure_connected):
         """Test that a ConnectionError is raised if the DoIPClient fails to connect."""
         mock_ensure_connected.side_effect = ConnectionError("Connection failed")
-        manager = DoIPMultiECUClient("192.168.1.1")
+        manager = DoIPManager("192.168.1.1")
         manager.add_ecu("engine", 0x00E0)
 
         with pytest.raises(ConnectionError, match="Connection failed"):
             with manager.ecu("engine"):
                 pass
 
-    @patch("udsonip.multi_ecu.DoIPClient")
+    @patch("udsonip.manager.DoIPClient")
     def test_manager_as_context_manager(self, MockDoIPClient):
         """Test using the manager as a context manager."""
-        with DoIPMultiECUClient("192.168.1.1") as manager:
+        with DoIPManager("192.168.1.1") as manager:
             manager.add_ecu("engine", 0x00E0)
             with manager.ecu("engine"):
                 pass
 
         # Check that close was called on exit
 
-    @patch("udsonip.multi_ecu.UDSClient")
-    @patch("udsonip.multi_ecu.UdsOnIpConnection")
+    @patch("udsonip.manager.UDSClient")
+    @patch("udsonip.manager.UdsOnIpConnection")
     def test_get_client_cache(self, MockUdsOnIpConnection, MockUDSClient, manager):
         """Test that the client is cached and reused."""
         manager.add_ecu("engine", 0x00E0)
@@ -146,7 +146,7 @@ class TestDoIPMultiECUClient:
             with manager.ecu("engine"):
                 raise ValueError("Test exception")
 
-    @patch("udsonip.multi_ecu.UdsOnIpConnection")
+    @patch("udsonip.manager.UdsOnIpConnection")
     def test_close_with_connection_error(self, MockUdsOnIpConnection, manager):
         """Test that close continues even if a connection fails to close."""
         manager.add_ecu("engine", 0x00E0)

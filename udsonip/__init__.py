@@ -11,26 +11,28 @@ __license__ = "MIT"
 
 from .connection import UdsOnIpConnection
 from .client import UdsOnIpClient
-from .multi_ecu import DoIPMultiECUClient
-from .discovery import discover_ecus, ECUInfo
+from .manager import DoIPManager
+from .discovery import discover_ecus, get_entity, ECUInfo
 from .exceptions import (
     UDSonIPException,
     ConnectionError,
     AddressSwitchError,
     DiscoveryError,
+    SessionError,
+    ECUNotFoundError,
 )
 
 __all__ = [
-    # Core classes
     "UdsOnIpConnection",
     "UdsOnIpClient",
-    "DoIPMultiECUClient",
-    # Discovery
+    "DoIPManager",
     "discover_ecus",
+    "get_entity",
     "ECUInfo",
-    # Exceptions
     "UDSonIPException",
     "ConnectionError",
     "AddressSwitchError",
     "DiscoveryError",
+    "SessionError",
+    "ECUNotFoundError",
 ]
