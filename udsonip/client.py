@@ -48,34 +48,35 @@ class UdsOnIpClient:
         keep_alive: bool = False,
         **kwargs,
     ):
-        # Create DoIP client
-        self._doip = DoIPClient(
-            ecu_ip_address=ecu_ip,
-            ecu_logical_address=ecu_address,
-            tcp_port=13400,
-            udp_port=13400,
-            client_ip_address=client_ip,
-            client_logical_address=client_logical_address,
-            activation_type=activation_type,
-            protocol_version=protocol_version,
-        )
-
         # Store configuration
         self._auto_reconnect = auto_reconnect
         self._keep_alive = keep_alive
 
-        # Create enhanced connection
-        self._connection = UdsOnIpConnection(self._doip, ecu_address)
-
-        # Create UDS client
-        self._uds = UDSClient(self._connection, **kwargs)
-
-        # Connect
         try:
-            self._doip.connect()
+            # Create DoIP client
+            self._doip = DoIPClient(
+                ecu_ip_address=ecu_ip,
+                ecu_logical_address=ecu_address,
+                tcp_port=13400,
+                udp_port=13400,
+                client_ip_address=client_ip,
+                client_logical_address=client_logical_address,
+                activation_type=activation_type,
+                protocol_version=protocol_version,
+            )
+
+            # Create enhanced connection
+            self._connection = UdsOnIpConnection(self._doip, ecu_address)
+
+            # Create UDS client
+            self._uds = UDSClient(self._connection, **kwargs)
+
+            # Connect
             self._connection.open()
         except Exception as e:
-            raise exceptions.ConnectionError(f"Failed to connect to {ecu_ip}:{ecu_address:#x}: {e}")
+            raise exceptions.ConnectionError(
+                f"Failed to connect to {ecu_ip}:{ecu_address:#x}"
+            ) from e
 
     @property
     def target_address(self) -> int:
@@ -110,9 +111,9 @@ class UdsOnIpClient:
         """Close the connection to the ECU."""
         try:
             self._connection.close()
-            self._doip.disconnect()
+            self._doip.close()
         except Exception as e:
-            raise exceptions.ConnectionError(f"Error closing connection: {e}")
+            raise exceptions.ConnectionError("Error closing connection") from e
 
     def __enter__(self):
         """Context manager entry."""

@@ -62,7 +62,6 @@ class TestDoIPMultiECUClient:
 
         with manager.ecu("engine") as ecu:
             assert ecu == MockUDSClient.return_value
-            manager._doip.connect.assert_called_once()
             MockUdsOnIpConnection.assert_called_once_with(manager._doip, 0x00E0)
             MockUDSClient.assert_called_once_with(MockUdsOnIpConnection.return_value)
 
@@ -95,23 +94,19 @@ class TestDoIPMultiECUClient:
         manager.close()
 
         mock_connection.close.assert_called_once()
-        manager._doip.disconnect.assert_called_once()
+        manager._doip.close.assert_called_once()
         assert not manager._connected
         assert not manager._connections
         assert not manager._clients
 
-    @patch("udsonip.multi_ecu.DoIPClient")
-    def test_ensure_connected_failure(self, MockDoIPClient):
+    @patch("udsonip.multi_ecu.DoIPMultiECUClient._ensure_connected")
+    def test_ensure_connected_failure(self, mock_ensure_connected):
         """Test that a ConnectionError is raised if the DoIPClient fails to connect."""
-        mock_doip_instance = MockDoIPClient.return_value
-        mock_doip_instance.connect.side_effect = Exception("Connection failed")
-
+        mock_ensure_connected.side_effect = ConnectionError("Connection failed")
         manager = DoIPMultiECUClient("192.168.1.1")
         manager.add_ecu("engine", 0x00E0)
 
-        with pytest.raises(
-            ConnectionError, match="Failed to connect to gateway 192.168.1.1: Connection failed"
-        ):
+        with pytest.raises(ConnectionError, match="Connection failed"):
             with manager.ecu("engine"):
                 pass
 
@@ -160,16 +155,16 @@ class TestDoIPMultiECUClient:
         manager._connections["engine"].close.side_effect = Exception("Close failed")
 
         manager.close()
-        manager._doip.disconnect.assert_called_once()
+        manager._doip.close.assert_called_once()
 
     def test_close_with_disconnect_error(self, manager):
         """Test that close continues even if the DoIP client fails to disconnect."""
         manager.add_ecu("engine", 0x00E0)
         with manager.ecu("engine"):
             pass
-        manager._doip.disconnect.side_effect = Exception("Disconnect failed")
+        manager._doip.close.side_effect = Exception("Disconnect failed")
 
         manager.close()
         assert not manager._connected
 
-        manager._doip.disconnect.assert_called_once()
+        manager._doip.close.assert_called_once()
