@@ -216,7 +216,7 @@ class DoIPMultiECUClient:
         # Disconnect DoIP client
         if self._doip and self._connected:
             try:
-                self._doip.disconnect()
+                self._doip.close()
             except Exception:
                 pass
             self._connected = False
