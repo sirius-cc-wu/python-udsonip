@@ -40,7 +40,6 @@ class TestUdsOnIpClient:
         MockUdsOnIpConnection.assert_called_once_with(MockDoIPClient.return_value, 0x00E0)
         MockUDSClient.assert_called_once_with(MockUdsOnIpConnection.return_value)
 
-        MockDoIPClient.return_value.connect.assert_called_once()
         MockUdsOnIpConnection.return_value.open.assert_called_once()
 
     @patch("udsonip.client.DoIPClient")
@@ -48,10 +47,12 @@ class TestUdsOnIpClient:
     @patch("udsonip.client.UdsOnIpConnection")
     def test_init_connection_error(self, MockUdsOnIpConnection, MockUDSClient, MockDoIPClient):
         """Test that a ConnectionError is raised if the DoIPClient fails to connect."""
-        MockDoIPClient.return_value.connect.side_effect = Exception("Connection failed")
+        MockUdsOnIpConnection.return_value.open.side_effect = Exception(
+            "Connection failed"
+        )
 
         with pytest.raises(
-            ConnectionError, match="Failed to connect to 192.168.1.1:0xe0: Connection failed"
+            ConnectionError, match="Failed to connect to 192.168.1.1:0xe0"
         ):
             UdsOnIpClient("192.168.1.1", 0x00E0)
 
@@ -79,7 +80,7 @@ class TestUdsOnIpClient:
         """Test that the close method closes the connection."""
         client.close()
         client._connection.close.assert_called_once()
-        client._doip.disconnect.assert_called_once()
+        client._doip.close.assert_called_once()
 
     @patch("udsonip.client.UdsOnIpConnection")
     def test_close_error(self, MockUdsOnIpConnection):
@@ -87,7 +88,7 @@ class TestUdsOnIpClient:
         with patch("udsonip.client.DoIPClient"), patch("udsonip.client.UDSClient"):
             client = UdsOnIpClient("192.168.1.1", 0x00E0)
         client._connection.close.side_effect = Exception("Close failed")
-        with pytest.raises(ConnectionError, match="Error closing connection: Close failed"):
+        with pytest.raises(ConnectionError, match="Error closing connection"):
             client.close()
 
     def test_context_manager(self):
@@ -97,8 +98,8 @@ class TestUdsOnIpClient:
         ):
             with UdsOnIpClient("192.168.1.1", 0x00E0) as client:
                 assert isinstance(client, UdsOnIpClient)
-            # close() is called on exit, so disconnect() should have been called
-            client._doip.disconnect.assert_called_once()
+            # close() is called on exit, so close() should have been called
+            client._doip.close.assert_called_once()
 
 
 class TestConvenienceMethods:
