@@ -37,6 +37,18 @@ class DoIPManager:
         protocol_version: int = 3,
         **kwargs,
     ):
+        """
+        Initializes the DoIPManager.
+
+        Args:
+            gateway_ip: The IP address of the DoIP gateway.
+            client_ip: Optional. The IP address of the client. If None, the system will
+                       attempt to determine it automatically.
+            client_logical_address: Optional. The logical address of the client.
+                                    Defaults to 0x0E00.
+            protocol_version: Optional. The DoIP protocol version to use. Defaults to 3.
+            **kwargs: Additional keyword arguments to pass to the underlying DoIPClient.
+        """
         self._gateway_ip = gateway_ip
         self._client_ip = client_ip
         self._client_logical_address = client_logical_address

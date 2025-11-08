@@ -12,8 +12,9 @@ __license__ = "MIT"
 from .connection import UdsOnIpConnection
 from .client import UdsOnIpClient
 from .manager import DoIPManager
-from .discovery import discover_ecus, get_entity
+from .discovery import discover_ecus, get_entity, ECUInfo
 from .exceptions import (
+    UDSonIPException,
     ConnectionError,
     AddressSwitchError,
     DiscoveryError,
@@ -22,10 +23,13 @@ from .exceptions import (
 )
 
 __all__ = [
+    "UdsOnIpConnection",
     "UdsOnIpClient",
     "DoIPManager",
     "discover_ecus",
     "get_entity",
+    "ECUInfo",
+    "UDSonIPException",
     "ConnectionError",
     "AddressSwitchError",
     "DiscoveryError",
