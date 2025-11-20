@@ -30,6 +30,9 @@ class ECUInfo:
     logical_address: int
     """ECU logical address"""
 
+    vin: Optional[str] = None
+    """Vehicle Identification Number"""
+
     eid: Optional[bytes] = None
     """Entity Identification (VIN or similar)"""
 
@@ -69,7 +72,7 @@ class ECUInfo:
 
 
 def discover_ecus(
-    interface: Optional[str] = None, timeout: float = 3.0, protocol_version: int = 0x02
+    interface: Optional[str] = None, timeout: float = 3.0, protocol_version: int = 0x03
 ) -> List[ECUInfo]:
     """
     Discover ECUs on the DoIP network by broadcasting a Vehicle Identification
@@ -141,6 +144,7 @@ def discover_ecus(
                         ecu_info = ECUInfo(
                             ip=ip,
                             logical_address=logical_address,
+                            vin=announcement.vin if announcement.vin else None,
                             eid=announcement.eid,
                             gid=announcement.gid,
                             further_action_required=announcement.further_action_required.value,
