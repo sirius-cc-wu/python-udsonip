@@ -4,6 +4,7 @@ Enhanced DoIP connection for UDS communication with dynamic target address suppo
 
 from typing import Optional
 from udsoncan.connections import BaseConnection
+from udsoncan.exceptions import TimeoutException
 from doipclient import DoIPClient
 from .exceptions import AddressSwitchError
 
@@ -104,6 +105,9 @@ class UdsOnIpConnection(BaseConnection):
                 self.logger.debug(f"Received {len(response)} bytes: {response.hex()}")
                 return bytes(response)
             return None
+        except TimeoutError as e:
+            # Re-raise TimeoutError as udsoncan's TimeoutException for consistency
+            raise TimeoutException(f"UDS-on-IP operation timed out: {e}") from e
         except Exception as e:
             self.logger.error(f"Error receiving frame: {e}")
             raise
