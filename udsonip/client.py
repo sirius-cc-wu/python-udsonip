@@ -174,7 +174,8 @@ class UdsOnIpClient:
             Service response with DTC information
         """
         return self._uds.read_dtc_information(
-            services.ReadDTCInformation.Subfunction.reportDTCByStatusMask, dtc_status_mask
+            services.ReadDTCInformation.Subfunction.reportDTCByStatusMask,
+            dtc_status_mask,
         )
 
     def clear_dtc(self, group: int = 0xFFFFFF):
@@ -229,7 +230,9 @@ class UdsOnIpClient:
         else:
             return self._uds.send_key(level, key)
 
-    def routine_control(self, routine_id: int, control_type: int = 1, data: Optional[bytes] = None):
+    def routine_control(
+        self, routine_id: int, control_type: int = 1, data: Optional[bytes] = None
+    ):
         """
         Execute routine control (service UDS_SID_ROUTINE_CONTROL).
 

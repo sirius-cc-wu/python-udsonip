@@ -11,7 +11,10 @@ class TestECUInfo:
     def test_init(self):
         """Test ECUInfo initialization."""
         ecu = ECUInfo(
-            ip="192.168.1.10", logical_address=0x00E0, eid=b"VIN12345678901234", gid=b"\x00\x01"
+            ip="192.168.1.10",
+            logical_address=0x00E0,
+            eid=b"VIN12345678901234",
+            gid=b"\x00\x01",
         )
 
         assert ecu.ip == "192.168.1.10"
@@ -158,7 +161,9 @@ def test_discover_ecus_broadcast_failure(MockDoIPClient):
     )
 
     # Configure the mock: request fails
-    MockDoIPClient.request_vehicle_identification.side_effect = Exception("Broadcast failed")
+    MockDoIPClient.request_vehicle_identification.side_effect = Exception(
+        "Broadcast failed"
+    )
 
     # Return announcement once, then timeouts
     call_count = {"count": 0}
@@ -236,9 +241,13 @@ def test_discover_ecus_generic_error(MockDoIPClient):
     """Test that discover_ecus wraps a generic exception in DiscoveryError."""
     from udsonip.exceptions import DiscoveryError
 
-    MockDoIPClient.await_vehicle_announcement.side_effect = Exception("Generic network error")
+    MockDoIPClient.await_vehicle_announcement.side_effect = Exception(
+        "Generic network error"
+    )
 
-    with pytest.raises(DiscoveryError, match="ECU discovery failed: Generic network error"):
+    with pytest.raises(
+        DiscoveryError, match="ECU discovery failed: Generic network error"
+    ):
         discover_ecus()
 
 
@@ -250,6 +259,7 @@ def test_get_entity_generic_exception(MockDoIPClient):
     MockDoIPClient.get_entity.side_effect = Exception("Generic network error")
 
     with pytest.raises(
-        DiscoveryError, match="Failed to get entity info from 192.168.1.1: Generic network error"
+        DiscoveryError,
+        match="Failed to get entity info from 192.168.1.1: Generic network error",
     ):
         get_entity(ip="192.168.1.1")

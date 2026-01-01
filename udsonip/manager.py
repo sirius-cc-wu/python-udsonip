@@ -109,7 +109,7 @@ class DoIPManager:
     def _ensure_connected(self):
         """
         Ensure the DoIP connection is established.
-        
+
         Per ISO 13400-2:2019, we connect to the first registered ECU for routing
         activation. If no ECUs are registered, we fall back to 0x0001.
         """
@@ -249,4 +249,3 @@ class DoIPManager:
         Cleanup on deletion.
         """
         self.close()
-

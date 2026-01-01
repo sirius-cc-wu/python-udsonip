@@ -78,7 +78,9 @@ class TestUdsOnIpConnection:
 
         conn.specific_send(payload)
 
-        mock_doip.send_diagnostic_to_address.assert_called_once_with(0x00E1, bytearray(payload))
+        mock_doip.send_diagnostic_to_address.assert_called_once_with(
+            0x00E1, bytearray(payload)
+        )
 
     def test_specific_wait_frame(self):
         """Test receiving data."""
