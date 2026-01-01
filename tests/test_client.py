@@ -1,6 +1,7 @@
 import pytest
 from unittest.mock import patch, MagicMock
 from udsonip.client import UdsOnIpClient
+from udsonip import constants
 from udsonip.exceptions import ConnectionError, AddressSwitchError
 
 
@@ -35,7 +36,7 @@ class TestUdsOnIpClient:
             client_ip_address="192.168.1.100",
             client_logical_address=0x0E01,
             activation_type=0,
-            protocol_version=0x03,
+            protocol_version=constants.PROTOCOL_VERSION,
         )
         MockUdsOnIpConnection.assert_called_once_with(MockDoIPClient.return_value, 0x00E0)
         MockUDSClient.assert_called_once_with(MockUdsOnIpConnection.return_value)
@@ -114,14 +115,14 @@ class TestConvenienceMethods:
     def test_read_data_by_identifier(self, client):
         """Test the read_data_by_identifier method."""
         with patch.object(client, "_uds") as mock_uds:
-            client.read_data_by_identifier(0xF190)
-            mock_uds.read_data_by_identifier.assert_called_once_with(0xF190)
+            client.read_data_by_identifier(constants.UDS_DID_VIN)
+            mock_uds.read_data_by_identifier.assert_called_once_with(constants.UDS_DID_VIN)
 
     def test_write_data_by_identifier(self, client):
         """Test the write_data_by_identifier method."""
         with patch.object(client, "_uds") as mock_uds:
-            client.write_data_by_identifier(0xF190, b"\x01\x02")
-            mock_uds.write_data_by_identifier.assert_called_once_with(0xF190, b"\x01\x02")
+            client.write_data_by_identifier(constants.UDS_DID_VIN, b"\x01\x02")
+            mock_uds.write_data_by_identifier.assert_called_once_with(constants.UDS_DID_VIN, b"\x01\x02")
 
     def test_read_dtc_information(self, client):
         """Test the read_dtc_information method."""
@@ -166,17 +167,17 @@ class TestConvenienceMethods:
     def test_routine_control_start(self, client):
         """Test the routine_control method for starting a routine."""
         with patch.object(client, "_uds") as mock_uds:
-            client.routine_control(0x1234, 1, data=b"\xab")
+            client.routine_control(0x1234, constants.UDS_ROUTINE_CONTROL_START_ROUTINE, data=b"\xab")
             mock_uds.start_routine.assert_called_once_with(0x1234, b"\xab")
 
     def test_routine_control_stop(self, client):
         """Test the routine_control method for stopping a routine."""
         with patch.object(client, "_uds") as mock_uds:
-            client.routine_control(0x1234, 2, data=b"\xcd")
+            client.routine_control(0x1234, constants.UDS_ROUTINE_CONTROL_STOP_ROUTINE, data=b"\xcd")
             mock_uds.stop_routine.assert_called_once_with(0x1234, b"\xcd")
 
     def test_routine_control_result(self, client):
         """Test the routine_control method for requesting results."""
         with patch.object(client, "_uds") as mock_uds:
-            client.routine_control(0x1234, 3, data=b"\xef")
+            client.routine_control(0x1234, constants.UDS_ROUTINE_CONTROL_REQUEST_ROUTINE_RESULTS, data=b"\xef")
             mock_uds.get_routine_result.assert_called_once_with(0x1234, b"\xef")

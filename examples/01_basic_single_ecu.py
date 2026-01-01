@@ -2,7 +2,7 @@
 Basic example: Single ECU communication using udsonip.
 """
 
-from udsonip import UdsOnIpClient
+from udsonip import UdsOnIpClient, constants
 
 def main():
     # Create client connected to a single ECU
@@ -17,9 +17,9 @@ def main():
         response = client.tester_present()
         print(f"✓ TesterPresent response: {response}")
         
-        # Read VIN (Data Identifier 0xF190)
+        # Read VIN (Data Identifier UDS_DID_VIN)
         print("\nReading VIN...")
-        response = client.read_data_by_identifier(0xF190)
+        response = client.read_data_by_identifier(constants.UDS_DID_VIN)
         vin = response.data.decode('ascii', errors='ignore')
         print(f"✓ VIN: {vin}")
         

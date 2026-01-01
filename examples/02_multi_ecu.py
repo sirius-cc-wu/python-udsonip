@@ -2,7 +2,7 @@
 Multi-ECU example: Communicating with multiple ECUs using udsonip.
 """
 
-from udsonip import DoIPManager
+from udsonip import DoIPManager, constants
 from udsoncan import services
 
 # Create a manager for a DoIP gateway
@@ -22,7 +22,7 @@ try:
     # Communicate with engine ECU
     print("\n=== Engine ECU ===")
     with manager.ecu('engine') as ecu:
-        response = ecu.read_data_by_identifier(0xF190)
+        response = ecu.read_data_by_identifier(constants.UDS_DID_VIN)
         vin = response.data.decode('ascii', errors='ignore')
         print(f"VIN: {vin}")
         
@@ -32,7 +32,7 @@ try:
     # Communicate with transmission ECU
     print("\n=== Transmission ECU ===")
     with manager.ecu('transmission') as ecu:
-        response = ecu.read_data_by_identifier(0xF190)
+        response = ecu.read_data_by_identifier(constants.UDS_DID_VIN)
         vin = response.data.decode('ascii', errors='ignore')
         print(f"VIN: {vin}")
         

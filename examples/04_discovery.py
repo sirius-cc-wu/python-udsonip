@@ -2,7 +2,7 @@
 ECU discovery example.
 """
 
-from udsonip import discover_ecus
+from udsonip import discover_ecus, constants
 
 def main():
     print("Discovering ECUs on the network...")
@@ -34,7 +34,7 @@ def main():
         
         try:
             # Read VIN
-            response = client.read_data_by_identifier(0xF190)
+            response = client.read_data_by_identifier(constants.UDS_DID_VIN)
             vin = response.data.decode('ascii', errors='ignore')
             print(f"✓ VIN: {vin}")
         finally:

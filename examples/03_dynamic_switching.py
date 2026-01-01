@@ -2,7 +2,7 @@
 Dynamic address switching example.
 """
 
-from udsonip import UdsOnIpClient
+from udsonip import UdsOnIpClient, constants
 
 def main():
     # Create client
@@ -13,13 +13,13 @@ def main():
     
     try:
         print("=== Initial target: Engine (0x00E0) ===")
-        response = client.read_data_by_identifier(0xF190)
+        response = client.read_data_by_identifier(constants.UDS_DID_VIN)
         print(f"VIN: {response.data.decode('ascii', errors='ignore')}")
         
         # Switch to transmission ECU
         print("\n=== Switching to Transmission (0x00E1) ===")
         client.target_address = 0x00E1
-        response = client.read_data_by_identifier(0xF190)
+        response = client.read_data_by_identifier(constants.UDS_DID_VIN)
         print(f"VIN: {response.data.decode('ascii', errors='ignore')}")
         
         # Switch to ABS ECU

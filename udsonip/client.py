@@ -8,6 +8,7 @@ from udsoncan.client import Client as UDSClient
 from udsoncan import services
 from .connection import UdsOnIpConnection
 from . import exceptions
+from . import constants
 
 
 class UdsOnIpClient:
@@ -22,7 +23,7 @@ class UdsOnIpClient:
         ecu_ip: IP address of the DoIP gateway/ECU
         ecu_address: Logical address of the target ECU
         client_ip: Optional source IP address (auto-detected if None)
-        client_logical_address: Optional client logical address (default: 0x0E00)
+        client_logical_address: Optional client logical address (default: constants.CLIENT_LOGICAL_ADDRESS)
         activation_type: DoIP activation type (default: 0)
         protocol_version: DoIP protocol version (default: 0x03)
         auto_reconnect: Automatically reconnect on connection loss
@@ -41,7 +42,7 @@ class UdsOnIpClient:
         ecu_ip: str,
         ecu_address: int,
         client_ip: Optional[str] = None,
-        client_logical_address: int = 0x0E00,
+        client_logical_address: int = constants.CLIENT_LOGICAL_ADDRESS,
         activation_type: int = 0,
         protocol_version: int = 0x03,
         auto_reconnect: bool = False,
@@ -139,7 +140,7 @@ class UdsOnIpClient:
 
     def read_data_by_identifier(self, did: Union[int, list]):
         """
-        Read data by identifier (service 0x22).
+        Read data by identifier (service UDS_SID_READ_DATA_BY_IDENTIFIER).
 
         Args:
             did: Data identifier or list of identifiers
@@ -151,7 +152,7 @@ class UdsOnIpClient:
 
     def write_data_by_identifier(self, did: int, data: bytes):
         """
-        Write data by identifier (service 0x2E).
+        Write data by identifier (service UDS_SID_WRITE_DATA_BY_IDENTIFIER).
 
         Args:
             did: Data identifier
@@ -164,7 +165,7 @@ class UdsOnIpClient:
 
     def read_dtc_information(self, dtc_status_mask: int = 0xFF):
         """
-        Read DTC information (service 0x19).
+        Read DTC information (service UDS_SID_READ_DTC_INFORMATION).
 
         Args:
             dtc_status_mask: DTC status mask
@@ -178,7 +179,7 @@ class UdsOnIpClient:
 
     def clear_dtc(self, group: int = 0xFFFFFF):
         """
-        Clear diagnostic trouble codes (service 0x14).
+        Clear diagnostic trouble codes (service UDS_SID_CLEAR_DIAGNOSTIC_INFORMATION).
 
         Args:
             group: DTC group to clear (default: all DTCs)
@@ -190,7 +191,7 @@ class UdsOnIpClient:
 
     def ecu_reset(self, reset_type: int = 1):
         """
-        Request ECU reset (service 0x11).
+        Request ECU reset (service UDS_SID_ECU_RESET).
 
         Args:
             reset_type: Reset type (1=hard reset, 2=key off/on, 3=soft reset)
@@ -202,7 +203,7 @@ class UdsOnIpClient:
 
     def change_session(self, session: int):
         """
-        Change diagnostic session (service 0x10).
+        Change diagnostic session (service UDS_SID_DIAGNOSTIC_SESSION_CONTROL).
 
         Args:
             session: Session type (1=default, 2=programming, 3=extended)
@@ -214,7 +215,7 @@ class UdsOnIpClient:
 
     def security_access(self, level: int, key: Optional[bytes] = None):
         """
-        Request security access (service 0x27).
+        Request security access (service UDS_SID_SECURITY_ACCESS).
 
         Args:
             level: Security level
@@ -230,7 +231,7 @@ class UdsOnIpClient:
 
     def routine_control(self, routine_id: int, control_type: int = 1, data: Optional[bytes] = None):
         """
-        Execute routine control (service 0x31).
+        Execute routine control (service UDS_SID_ROUTINE_CONTROL).
 
         Args:
             routine_id: Routine identifier

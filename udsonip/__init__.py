@@ -21,6 +21,7 @@ from .exceptions import (
     SessionError,
     ECUNotFoundError,
 )
+from . import constants
 
 __all__ = [
     "UdsOnIpConnection",
@@ -35,4 +36,5 @@ __all__ = [
     "DiscoveryError",
     "SessionError",
     "ECUNotFoundError",
+    "constants",
 ]

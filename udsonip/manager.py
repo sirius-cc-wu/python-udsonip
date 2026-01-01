@@ -8,6 +8,7 @@ from doipclient import DoIPClient
 from udsoncan.client import Client as UDSClient
 from .connection import UdsOnIpConnection
 from . import exceptions
+from . import constants
 
 
 class DoIPManager:
@@ -25,7 +26,7 @@ class DoIPManager:
         >>> manager.add_ecu('transmission', 0x00E1)
         >>>
         >>> with manager.ecu('engine') as ecu:
-        ...     vin = ecu.read_data_by_identifier(0xF190)
+        ...     vin = ecu.read_data_by_identifier(constants.UDS_DID_VIN)
         ...     print(f"Engine VIN: {vin.data.decode()}")
     """
 
@@ -33,7 +34,7 @@ class DoIPManager:
         self,
         gateway_ip: str,
         client_ip: Optional[str] = None,
-        client_logical_address: int = 0x0E00,
+        client_logical_address: int = constants.CLIENT_LOGICAL_ADDRESS,
         protocol_version: int = 3,
         **kwargs,
     ):
@@ -45,7 +46,7 @@ class DoIPManager:
             client_ip: Optional. The IP address of the client. If None, the system will
                        attempt to determine it automatically.
             client_logical_address: Optional. The logical address of the client.
-                                    Defaults to 0x0E00.
+                                    Defaults to constants.CLIENT_LOGICAL_ADDRESS.
             protocol_version: Optional. The DoIP protocol version to use. Defaults to 3.
             **kwargs: Additional keyword arguments to pass to the underlying DoIPClient.
         """
@@ -182,7 +183,7 @@ class DoIPManager:
 
         Example:
             >>> with manager.ecu('engine') as ecu:
-            ...     vin = ecu.read_data_by_identifier(0xF190)
+        ...     vin = ecu.read_data_by_identifier(constants.UDS_DID_VIN)
             ...     print(f"Engine VIN: {vin.data.decode()}")
         """
         client = self._get_client(name)
@@ -248,3 +249,4 @@ class DoIPManager:
         Cleanup on deletion.
         """
         self.close()
+
