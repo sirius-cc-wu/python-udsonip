@@ -34,7 +34,7 @@ class DoIPManager:
         self,
         gateway_ip: str,
         client_ip: Optional[str] = None,
-        client_logical_address: int = constants.CLIENT_LOGICAL_ADDRESS,
+        client_logical_address: Optional[int] = None,
         protocol_version: int = 3,
         **kwargs,
     ):
@@ -45,8 +45,8 @@ class DoIPManager:
             gateway_ip: The IP address of the DoIP gateway.
             client_ip: Optional. The IP address of the client. If None, the system will
                        attempt to determine it automatically.
-            client_logical_address: Optional. The logical address of the client.
-                                    Defaults to constants.CLIENT_LOGICAL_ADDRESS.
+            client_logical_address: Optional. The logical address of the client. If None, the underlying
+                                    DoIP client will use a default or determine it automatically.
             protocol_version: Optional. The DoIP protocol version to use. Defaults to 3.
             **kwargs: Additional keyword arguments to pass to the underlying DoIPClient.
         """

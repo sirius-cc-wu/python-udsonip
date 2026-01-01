@@ -23,7 +23,7 @@ class UdsOnIpClient:
         ecu_ip: IP address of the DoIP gateway/ECU
         ecu_address: Logical address of the target ECU
         client_ip: Optional source IP address (auto-detected if None)
-        client_logical_address: Optional client logical address (default: constants.CLIENT_LOGICAL_ADDRESS)
+        client_logical_address: Optional client logical address (required if not provided in kwargs)
         activation_type: DoIP activation type (default: 0)
         protocol_version: DoIP protocol version (default: 0x03)
         auto_reconnect: Automatically reconnect on connection loss
@@ -42,7 +42,7 @@ class UdsOnIpClient:
         ecu_ip: str,
         ecu_address: int,
         client_ip: Optional[str] = None,
-        client_logical_address: int = constants.CLIENT_LOGICAL_ADDRESS,
+        client_logical_address: Optional[int] = None,
         activation_type: int = 0,
         protocol_version: int = 0x03,
         auto_reconnect: bool = False,
