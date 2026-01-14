@@ -87,7 +87,7 @@ def discover_ecus(
     Args:
         interface: Network interface to use for IPv6 (not typically required for IPv4).
         timeout: Discovery timeout in seconds.
-        protocol_version: DoIP protocol version (default: 0x02).
+        protocol_version: DoIP protocol version (default: 0x03).
     Returns:
         List of discovered ECU information (duplicates filtered by IP and logical address).
     Raises:
@@ -201,9 +201,15 @@ def get_entity(ip: str, protocol_version: int = 0x03) -> Optional[ECUInfo]:
         return ECUInfo(
             ip=ip_address,
             logical_address=announcement.logical_address,
+            vin=announcement.vin if announcement.vin else None,
             eid=announcement.eid,
             gid=announcement.gid,
             further_action_required=announcement.further_action_required.value,
+            vin_gid_sync_status=(
+                announcement.vin_sync_status.value
+                if announcement.vin_sync_status is not None
+                else None
+            ),
         )
     except TimeoutError:
         return None

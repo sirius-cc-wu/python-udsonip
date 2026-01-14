@@ -26,7 +26,7 @@ try:
         vin = response.data.decode("ascii", errors="ignore")
         print(f"VIN: {vin}")
 
-        response = ecu.read_data_by_identifier(0xF195)
+        response = ecu.read_data_by_identifier(constants.UDS_DID_ECU_SOFTWARE_VERSION)
         print(f"Software: {response.data.hex()}")
 
     # Communicate with transmission ECU

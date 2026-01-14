@@ -29,7 +29,7 @@ def main():
         # Switch back to engine
         print("\n=== Switching back to Engine (0x00E0) ===")
         client.target_address = 0x00E0
-        response = client.read_data_by_identifier(0xF195)
+        response = client.read_data_by_identifier(constants.UDS_DID_ECU_SOFTWARE_VERSION)
         print(f"Software version: {response.data.hex()}")
 
         print(f"\n✓ Successfully communicated with {client.target_address:#x}")

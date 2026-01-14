@@ -15,7 +15,7 @@ def main():
         response = client.tester_present()
         print(f"✓ TesterPresent response: {response}")
 
-        # Read VIN (Data Identifier UDS_DID_VIN)
+        # Read VIN (Data Identifier 0xF190)
         print("\nReading VIN...")
         response = client.read_data_by_identifier(constants.UDS_DID_VIN)
         vin = response.data.decode("ascii", errors="ignore")
@@ -23,7 +23,7 @@ def main():
 
         # Read ECU software version (DID 0xF195)
         print("\nReading software version...")
-        response = client.read_data_by_identifier(0xF195)
+        response = client.read_data_by_identifier(constants.UDS_DID_ECU_SOFTWARE_VERSION)
         version = response.data.hex()
         print(f"✓ Software Version: {version}")
 
