@@ -7,11 +7,11 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "python-udsonip"
-copyright = "2025, ccwu"
-author = "ccwu"
+copyright = "2025-2026, Sirius Wu"
+author = "Sirius Wu"
 
-version = "0.3.0"
-release = "0.3.0"
+version = "0.4.0"
+release = "0.4.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
