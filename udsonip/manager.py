@@ -8,6 +8,7 @@ from doipclient import DoIPClient
 from udsoncan.client import Client as UDSClient
 from .connection import UdsOnIpConnection
 from . import exceptions
+from . import constants
 
 
 class DoIPManager:
@@ -25,7 +26,7 @@ class DoIPManager:
         >>> manager.add_ecu('transmission', 0x00E1)
         >>>
         >>> with manager.ecu('engine') as ecu:
-        ...     vin = ecu.read_data_by_identifier(0xF190)
+        ...     vin = ecu.read_data_by_identifier(constants.UDS_DID_VIN)
         ...     print(f"Engine VIN: {vin.data.decode()}")
     """
 
@@ -33,7 +34,7 @@ class DoIPManager:
         self,
         gateway_ip: str,
         client_ip: Optional[str] = None,
-        client_logical_address: int = 0x0E00,
+        client_logical_address: Optional[int] = None,
         protocol_version: int = 3,
         **kwargs,
     ):
@@ -108,7 +109,7 @@ class DoIPManager:
     def _ensure_connected(self):
         """
         Ensure the DoIP connection is established.
-        
+
         Per ISO 13400-2:2019, we connect to the first registered ECU for routing
         activation. If no ECUs are registered, we fall back to 0x0001.
         """
@@ -182,7 +183,7 @@ class DoIPManager:
 
         Example:
             >>> with manager.ecu('engine') as ecu:
-            ...     vin = ecu.read_data_by_identifier(0xF190)
+        ...     vin = ecu.read_data_by_identifier(constants.UDS_DID_VIN)
             ...     print(f"Engine VIN: {vin.data.decode()}")
         """
         client = self._get_client(name)

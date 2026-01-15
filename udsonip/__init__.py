@@ -5,7 +5,7 @@ Provides seamless integration between python-doipclient and python-udsoncan
 with multi-ECU support, dynamic address switching, and enhanced features.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.4.0"
 __author__ = "Sirius Wu"
 __license__ = "MIT"
 
@@ -21,6 +21,7 @@ from .exceptions import (
     SessionError,
     ECUNotFoundError,
 )
+from . import constants
 
 __all__ = [
     "UdsOnIpConnection",
@@ -35,4 +36,5 @@ __all__ = [
     "DiscoveryError",
     "SessionError",
     "ECUNotFoundError",
+    "constants",
 ]
