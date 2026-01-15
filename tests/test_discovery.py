@@ -1,6 +1,7 @@
 import pytest
 import warnings
-from unittest.mock import patch
+import socket
+from unittest.mock import patch, MagicMock
 from doipclient.messages import VehicleIdentificationResponse
 from udsonip.discovery import ECUInfo, get_entity, discover_ecus
 
@@ -72,7 +73,7 @@ def test_get_entity_found(MockDoIPClient):
     assert ecu_info.eid == b"EID123"
     assert ecu_info.gid == b"GID123"
     MockDoIPClient.get_entity.assert_called_once_with(
-        ip="192.168.1.1", timeout=2.0, protocol_version=0x03
+        ecu_ip_address="192.168.1.1", protocol_version=0x03
     )
 
 
@@ -88,12 +89,13 @@ def test_get_entity_not_found(MockDoIPClient):
     # Assertions
     assert ecu_info is None
     MockDoIPClient.get_entity.assert_called_once_with(
-        ip="192.168.1.2", timeout=2.0, protocol_version=0x03
+        ecu_ip_address="192.168.1.2", protocol_version=0x03
     )
 
 
+@patch("udsonip.discovery.Parser")
 @patch("udsonip.discovery.DoIPClient")
-def test_discover_ecus_found(MockDoIPClient):
+def test_discover_ecus_found(MockDoIPClient, MockParser):
     """Test discover_ecus when a single ECU is found."""
     # Mock the announcement message
     mock_announcement = VehicleIdentificationResponse(
@@ -104,19 +106,25 @@ def test_discover_ecus_found(MockDoIPClient):
         further_action_required=0x00,
     )
 
-    # Configure the mock: request succeeds
-    MockDoIPClient.request_vehicle_identification.return_value = None
+    # Create mock socket
+    mock_sock = MagicMock()
+    MockDoIPClient._create_udp_socket.return_value = mock_sock
+    MockDoIPClient._pack_doip.return_value = b"packed_data"
 
-    # Track call count to return announcement once, then timeouts
+    # Mock parser to return the announcement
+    mock_parser_instance = MockParser.return_value
+    mock_parser_instance.read_message.return_value = mock_announcement
+
+    # Mock socket.recvfrom to return data once, then raise timeout
     call_count = {"count": 0}
 
-    def mock_await(*args, **kwargs):
+    def mock_recvfrom(size):
         call_count["count"] += 1
         if call_count["count"] == 1:
-            return (("192.168.1.3", 13400), mock_announcement)
-        raise TimeoutError
+            return (b"response_data", ("192.168.1.3", 13400))
+        raise socket.timeout
 
-    MockDoIPClient.await_vehicle_announcement.side_effect = mock_await
+    mock_sock.recvfrom.side_effect = mock_recvfrom
 
     # Call the function
     ecus = discover_ecus(timeout=0.1)
@@ -129,69 +137,56 @@ def test_discover_ecus_found(MockDoIPClient):
     assert ecu_info.logical_address == 0x1002
     assert ecu_info.eid == b"EID456"
 
-    # Verify that request_vehicle_identification was called
-    MockDoIPClient.request_vehicle_identification.assert_called_once()
+    # Verify socket operations were called
+    mock_sock.sendto.assert_called_once()
+    mock_sock.close.assert_called_once()
 
 
+@patch("udsonip.discovery.Parser")
 @patch("udsonip.discovery.DoIPClient")
-def test_discover_ecus_timeout(MockDoIPClient):
+def test_discover_ecus_timeout(MockDoIPClient, MockParser):
     """Test discover_ecus when no ECUs are found."""
-    # Configure the mock: request succeeds but no announcements received
-    MockDoIPClient.request_vehicle_identification.return_value = None
-    MockDoIPClient.await_vehicle_announcement.side_effect = TimeoutError
+    # Create mock socket
+    mock_sock = MagicMock()
+    MockDoIPClient._create_udp_socket.return_value = mock_sock
+    MockDoIPClient._pack_doip.return_value = b"packed_data"
+
+    # Mock socket.recvfrom to always raise timeout
+    mock_sock.recvfrom.side_effect = socket.timeout
 
     # Call the function
     ecus = discover_ecus(timeout=0.1)
 
     # Assertions
     assert len(ecus) == 0
-    MockDoIPClient.request_vehicle_identification.assert_called_once()
+    mock_sock.sendto.assert_called_once()
+    mock_sock.close.assert_called_once()
 
 
+@patch("udsonip.discovery.Parser")
 @patch("udsonip.discovery.DoIPClient")
-def test_discover_ecus_broadcast_failure(MockDoIPClient):
-    """Test discover_ecus when broadcast fails but listening still works."""
-    # Mock the announcement message
-    mock_announcement = VehicleIdentificationResponse(
-        vin=b"TESTVIN123456789",
-        logical_address=0x2001,
-        eid=b"EID789",
-        gid=b"GID789",
-        further_action_required=0x00,
-    )
+def test_discover_ecus_broadcast_failure(MockDoIPClient, MockParser):
+    """Test discover_ecus when sendto fails but socket creation succeeds."""
+    # Create mock socket
+    mock_sock = MagicMock()
+    MockDoIPClient._create_udp_socket.return_value = mock_sock
+    MockDoIPClient._pack_doip.return_value = b"packed_data"
 
-    # Configure the mock: request fails
-    MockDoIPClient.request_vehicle_identification.side_effect = Exception(
-        "Broadcast failed"
-    )
+    # Mock sendto to fail
+    mock_sock.sendto.side_effect = Exception("Network unreachable")
 
-    # Return announcement once, then timeouts
-    call_count = {"count": 0}
+    # Call the function - should raise DiscoveryError
+    from udsonip.exceptions import DiscoveryError
 
-    def mock_await(*args, **kwargs):
-        call_count["count"] += 1
-        if call_count["count"] == 1:
-            return (("192.168.1.5", 13400), mock_announcement)
-        raise TimeoutError
+    with pytest.raises(DiscoveryError, match="ECU discovery failed"):
+        discover_ecus(timeout=0.1)
 
-    MockDoIPClient.await_vehicle_announcement.side_effect = mock_await
-
-    # Call the function - should warn but continue
-    with warnings.catch_warnings(record=True) as w:
-        warnings.simplefilter("always")
-        ecus = discover_ecus(timeout=0.1)
-
-        # Verify warning was raised
-        assert len(w) == 1
-        assert "Failed to broadcast" in str(w[0].message)
-
-    # Should still find the ECU from spontaneous announcement
-    assert len(ecus) == 1
-    assert ecus[0].logical_address == 0x2001
+    mock_sock.close.assert_called_once()
 
 
+@patch("udsonip.discovery.Parser")
 @patch("udsonip.discovery.DoIPClient")
-def test_discover_ecus_duplicate_filtering(MockDoIPClient):
+def test_discover_ecus_duplicate_filtering(MockDoIPClient, MockParser):
     """Test that discover_ecus filters duplicate ECUs."""
     # Mock announcement - same ECU announced multiple times
     mock_announcement = VehicleIdentificationResponse(
@@ -202,19 +197,25 @@ def test_discover_ecus_duplicate_filtering(MockDoIPClient):
         further_action_required=0x00,
     )
 
-    # Configure the mock: request succeeds
-    MockDoIPClient.request_vehicle_identification.return_value = None
+    # Create mock socket
+    mock_sock = MagicMock()
+    MockDoIPClient._create_udp_socket.return_value = mock_sock
+    MockDoIPClient._pack_doip.return_value = b"packed_data"
 
-    # Return same announcement 3 times, then timeouts
+    # Mock parser to return the same announcement
+    mock_parser_instance = MockParser.return_value
+    mock_parser_instance.read_message.return_value = mock_announcement
+
+    # Mock socket.recvfrom to return same data 3 times, then timeout
     call_count = {"count": 0}
 
-    def mock_await(*args, **kwargs):
+    def mock_recvfrom(size):
         call_count["count"] += 1
         if call_count["count"] <= 3:
-            return (("192.168.1.10", 13400), mock_announcement)
-        raise TimeoutError
+            return (b"response_data", ("192.168.1.10", 13400))
+        raise socket.timeout
 
-    MockDoIPClient.await_vehicle_announcement.side_effect = mock_await
+    mock_sock.recvfrom.side_effect = mock_recvfrom
 
     # Call the function
     ecus = discover_ecus(timeout=0.1)
@@ -227,12 +228,13 @@ def test_discover_ecus_duplicate_filtering(MockDoIPClient):
 
 @patch("udsonip.discovery.DoIPClient")
 def test_discover_ecus_discovery_error(MockDoIPClient):
-    """Test that discover_ecus re-raises DiscoveryError."""
+    """Test that discover_ecus raises DiscoveryError on socket creation failure."""
     from udsonip.exceptions import DiscoveryError
 
-    MockDoIPClient.await_vehicle_announcement.side_effect = DiscoveryError("Test Error")
+    # Mock socket creation to fail
+    MockDoIPClient._create_udp_socket.side_effect = Exception("Socket creation failed")
 
-    with pytest.raises(DiscoveryError):
+    with pytest.raises(DiscoveryError, match="ECU discovery failed"):
         discover_ecus()
 
 
@@ -241,13 +243,14 @@ def test_discover_ecus_generic_error(MockDoIPClient):
     """Test that discover_ecus wraps a generic exception in DiscoveryError."""
     from udsonip.exceptions import DiscoveryError
 
-    MockDoIPClient.await_vehicle_announcement.side_effect = Exception(
-        "Generic network error"
-    )
+    # Create mock socket
+    mock_sock = MagicMock()
+    MockDoIPClient._create_udp_socket.return_value = mock_sock
 
-    with pytest.raises(
-        DiscoveryError, match="ECU discovery failed: Generic network error"
-    ):
+    # Mock _pack_doip to fail
+    MockDoIPClient._pack_doip.side_effect = Exception("Packing failed")
+
+    with pytest.raises(DiscoveryError, match="ECU discovery failed"):
         discover_ecus()
 
 
