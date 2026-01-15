@@ -136,9 +136,7 @@ def discover_ecus(
                 parser.reset()
                 announcement = parser.read_message(data)
 
-                if announcement and isinstance(
-                    announcement, VehicleIdentificationResponse
-                ):
+                if announcement and isinstance(announcement, VehicleIdentificationResponse):
                     ip, _ = addr
                     logical_address = announcement.logical_address
 

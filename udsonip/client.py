@@ -230,9 +230,7 @@ class UdsOnIpClient:
         else:
             return self._uds.send_key(level, key)
 
-    def routine_control(
-        self, routine_id: int, control_type: int = 1, data: Optional[bytes] = None
-    ):
+    def routine_control(self, routine_id: int, control_type: int = 1, data: Optional[bytes] = None):
         """
         Execute routine control (service UDS_SID_ROUTINE_CONTROL).
 
